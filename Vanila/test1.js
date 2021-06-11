@@ -1,4 +1,4 @@
-const canvas = document.querySelector('#myCanvas');
+const canvas = document.querySelector('.myCanvas');
 const ctx = canvas.getContext('2d');
 
 const getWidth = () => window.innerWidth;
@@ -32,6 +32,7 @@ const paint = () => {
   //     xPos += rectSize + 2;
   //     yPos = 0;
   //   }
+  ctx.fillStyle = 'pink';
   ctx.clearRect(0, 0, getWidth(), getHeight());
   ctx.fillRect(
     Math.abs(300 + Math.sin(Date.now() * 0.001) * 500),
