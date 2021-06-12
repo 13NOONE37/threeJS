@@ -12,6 +12,8 @@ body {
   left: 50%;
   position: absolute;
   transform: translate(-50%, -50%);
-  width: 454px;
-  height: 561px;
+  width: 425px;
+  height: 840px;
+
+  /* filter: blur(1px) contrast(2.5); */
 }

@@ -21,7 +21,7 @@ const paint = () => {
   //inny sposób ładowania obrazków - bezpieczniejszy dla przeglądarek - mniej błędów;
 
   const calculateRelativeBackground = (r, g, b) => {
-    return Math.sqrt(r * r * 0.299 + g * g * 0.587 + b * b * 0.114);
+    return Math.sqrt(r * r * 0.299 + g * g * 0.587 + b * b * 0.114) / 100;
   };
 
   myImage.addEventListener('load', () => {
@@ -29,7 +29,7 @@ const paint = () => {
     const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
     // console.log(pixels);
 
-    const particlesArray = [];
+    let particlesArray = [];
     const numberOfParticles = 200; // liczba particlesów
 
     let mappedImage = [];
@@ -63,8 +63,7 @@ const paint = () => {
         this.position2 = Math.floor(this.x);
         this.speed = mappedImage[this.position1][this.position2][0];
 
-        let movement = 2.5 + this.speed + this.velocity;
-        // let movement = 2.5 - this.speed + this.velocity;
+        let movement = 2.5 - this.speed + this.velocity;
 
         this.y += movement;
 
@@ -89,7 +88,7 @@ const paint = () => {
     init();
 
     const animate = () => {
-      ctx.drawImage(myImage, 0, 0, canvas.width, canvas.height);
+      // ctx.drawImage(myImage, 0, 0, canvas.width, canvas.height);
       ctx.globalAlpha = 0.05;
       ctx.fillStyle = 'rgb(0, 0, 0)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
