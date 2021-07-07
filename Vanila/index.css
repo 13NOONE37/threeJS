@@ -21,3 +21,6 @@ body {
 h1 {
   color: white;
 }
+.loop {
+  transform: scale(5);
+}
