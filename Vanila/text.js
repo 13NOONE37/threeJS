@@ -24,14 +24,14 @@ const mouse = {
 window.addEventListener('mousemove', (e) => {
   mouse.x = e.x;
   mouse.y = e.y;
-  mouse.radius = 150;
+  mouse.radius = 100;
   //   console.log(mouse.x, mouse.y);
 });
 
 const paint = () => {
   ctx.fillStyle = '#fff';
-  ctx.font = '30px Verdana';
-  ctx.fillText('$👽🐈', 0, 40);
+  ctx.font = '20px Verdana';
+  ctx.fillText('SZCZUR', 0, 40);
   const textCoordinates = ctx.getImageData(0, 0, 200, 100);
 
   class Particle {
