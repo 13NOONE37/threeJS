@@ -5,6 +5,7 @@ body {
   margin: 0;
 }
 .myCanvas {
+  margin-top: 50px;
   box-sizing: border-box;
   position: absolute;
   /* border: 3px solid white; */
