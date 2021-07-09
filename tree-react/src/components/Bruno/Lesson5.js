@@ -25,7 +25,7 @@ export default function Lesson4() {
     };
 
     const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    const material = new THREE.MeshBasicMaterial({ color: 0x666099 });
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
 
@@ -36,13 +36,13 @@ export default function Lesson4() {
     const cube1 = new THREE.Mesh(
       new THREE.BoxGeometry(),
       new THREE.MeshBasicMaterial({
-        color: 0xff0000,
+        color: 0x666099,
       }),
     );
     const cube2 = new THREE.Mesh(
       new THREE.BoxGeometry(),
       new THREE.MeshBasicMaterial({
-        color: 0xff0000,
+        color: 0x666099,
       }),
     );
     cube2.position.set(1.4, 0, 0);
