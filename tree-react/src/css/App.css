@@ -5,12 +5,22 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
+}
+html,
+body {
+  overflow: hidden;
+}
+.divFor3d {
   background-image: linear-gradient(
     90deg,
     hsl(246, 90%, 8%),
     hsl(206, 90%, 12%)
   );
+
+  position: fixed;
+  left: 0;
+  top: 0;
+  outline: none;
 }
 
 code {

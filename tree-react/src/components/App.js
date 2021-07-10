@@ -5,6 +5,8 @@ import SolarSystem from './Bruno/SolarSystem';
 import Lesson5 from './Bruno/Lesson5';
 import Lesson6 from './Bruno/Lesson6';
 import Lesson7 from './Bruno/Lesson7';
+import Lesson8 from './Bruno/Lesson8';
+import Lesson9 from './Bruno/Lesson9';
 
 function App() {
   return (
@@ -13,7 +15,9 @@ function App() {
       {/* <SolarSystem /> */}
       {/* <Lesson5 /> */}
       {/* <Lesson6 /> */}
-      <Lesson7 />
+      {/* <Lesson7 /> */}
+      {/* <Lesson8 /> */}
+      <Lesson9 />
     </div>
   );
 }

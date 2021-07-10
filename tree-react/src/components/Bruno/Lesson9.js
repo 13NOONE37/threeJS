@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls';
 import gsap from 'gsap';
 
-export default function Lesson7() {
+export default function Lesson8() {
   const box = useRef(null);
 
   useEffect(() => {
@@ -29,27 +28,21 @@ export default function Lesson7() {
     camera.position.z = 3;
 
     let aspectRatio = window.innerWidth / window.innerHeight;
-    // camera = new THREE.OrthographicCamera(
-    //   -1 * aspectRatio,
-    //   1 * aspectRatio,
-    //   1,
-    //   -1,
-    //   0.1,
-    //   100,
-    // );
 
     console.log(camera.position.length());
 
     rerender = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     rerender.setSize(window.innerWidth, window.innerHeight);
+    rerender.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //ustawia maksymalnie pixelRatio na 2 jesli pixelRatio urzadzenia jest wieksze od 2
+
     box.current.appendChild(rerender.domElement);
 
     const handleResize = () => {
       aspectRatio = window.innerWidth / window.innerHeight;
       rerender.setSize(window.innerWidth, window.innerHeight);
+      rerender.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // jeśli użytkownik przeniesie na inny ekran również zmieniamy pixelRatio
+
       camera.aspect = aspectRatio;
-      //   camera.left = -1 * aspectRatio;
-      //   camera.right = 1 * aspectRatio;
       camera.updateProjectionMatrix();
     };
 
@@ -66,14 +59,6 @@ export default function Lesson7() {
     const clock = new THREE.Clock();
     const loop = () => {
       const elapsedTime = clock.getElapsedTime();
-      //   cube.rotation.x = cursor.y;
-      //   cube.rotation.y = cursor.x;
-
-      //   camera.position.x = Math.sin(cursor.x * Math.PI * 2) * 3;
-      //   camera.position.z = Math.cos(cursor.x * Math.PI * 2) * 3;
-      //   camera.position.y = cursor.y * 5;
-      //   camera.lookAt(cube.position);
-
       //   Update controls; zeby Damping działał
       controls.update();
 
@@ -83,6 +68,33 @@ export default function Lesson7() {
     loop();
 
     window.addEventListener('resize', handleResize);
+
+    //Full screen handle
+    window.addEventListener('dblclick', () => {
+      //Deciding does it Normal browser or Safari
+      const screenElement =
+        document.fullscreenElement || document.webkitFullscreenElement;
+
+      if (!screenElement) {
+        //without full
+        if (box.current.requestFullscreen) {
+          //normal
+          box.current.requestFullscreen();
+        } else if (box.current.webkitRequestFullscreen) {
+          //safari
+          box.current.webkitRequestFullscreen();
+        }
+      } else {
+        //fullscreen
+        if (document.exitFullscreen) {
+          //normal
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          //safari
+          document.webkitExitFullscreen();
+        }
+      }
+    });
   }, []);
-  return <div ref={box}></div>;
+  return <div class="divFor3d" ref={box}></div>;
 }
