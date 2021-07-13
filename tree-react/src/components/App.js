@@ -9,18 +9,14 @@ import Lesson8 from './Bruno/Lesson8';
 import Lesson9 from './Bruno/Lesson9';
 import Lesson10 from './Bruno/Lesson10';
 import Lesson11 from './Bruno/Lesson11';
+import Lesson12 from './Bruno/Lesson12';
 
 function App() {
   return (
     <div className="App">
       {/* <Main /> */}
       {/* <SolarSystem /> */}
-      {/* <Lesson5 /> */}
-      {/* <Lesson6 /> */}
-      {/* <Lesson7 /> */}
-      {/* <Lesson8 /> */}
-      {/* <Lesson9 /> */}
-      <Lesson11 />
+      <Lesson12 />
     </div>
   );
 }

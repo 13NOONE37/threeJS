@@ -5,6 +5,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import gsap from 'gsap';
 import { GeometryUtils } from 'three';
 
+import metalTestTexture from '../textures/MetalFloor/Metal_Plate_048_basecolor.jpg';
 import colorTexture from '../textures/minecraft.png';
 import alphaTexture from '../textures/door/alpha.jpg';
 import heightTexture from '../textures/door/height.jpg';
@@ -70,11 +71,15 @@ export default function Lesson8() {
     loadingManager.onProgress = () => {
       console.log('onProgres'); //można użyć do paska ładowania
     };
+    loadingManager.onLoad = () => {
+      console.log('loaded');
+    };
     loadingManager.onError = () => {
       console.log('error');
     };
     const textureLoader = new THREE.TextureLoader(loadingManager);
     const texture = textureLoader.load(colorTexture);
+    const texture2 = textureLoader.load(metalTestTexture);
 
     //One textureLoader can load more than one texture
     // const texture2 = textureLoader.load(imageTexture1);
@@ -104,15 +109,13 @@ export default function Lesson8() {
 
     //mip mapping
     //defaultowo jest linearFilter
-
     //kiedy ustawimy zarówno minFilter jak i magFilter na NearestFilter pomijamy mipmapping musimy tylko dodać texture.generateMipmaps = false
-
     texture.generateMipmaps = false;
-    texture.minFilter = THREE.NearestFilter;
-    texture.magFilter = THREE.NearestFilter; //przydatne np. do minecrafta; nie bluruje nam to zbyt malych textur np. 8 na 8 pikseli gdy naniesiemy je na większy obiekt
+    /*kiedy bilsko*/ texture.minFilter = THREE.NearestFilter;
+    /*kiedy daleko*/ texture.magFilter = THREE.NearestFilter; //przydatne np. do minecrafta; nie bluruje nam to zbyt malych textur np. 8 na 8 pikseli gdy naniesiemy je na większy obiekt
     //używanie NearestFilter jest lepsze dla wydajności
 
-    const cubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 2, 2, 2);
+    const cubeGeometry = new THREE.BoxBufferGeometry(1, 1);
     const cubeMaterial = new THREE.MeshBasicMaterial({
       map: texture,
       //   wireframe: true,
