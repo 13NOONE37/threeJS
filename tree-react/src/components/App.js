@@ -10,13 +10,14 @@ import Lesson9 from './Bruno/Lesson9';
 import Lesson10 from './Bruno/Lesson10';
 import Lesson11 from './Bruno/Lesson11';
 import Lesson12 from './Bruno/Lesson12';
+import Lesson from './Bruno/Lesson13';
 
 function App() {
   return (
     <div className="App">
       {/* <Main /> */}
       {/* <SolarSystem /> */}
-      <Lesson12 />
+      <Lesson />
     </div>
   );
 }
