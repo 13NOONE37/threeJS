@@ -30,7 +30,9 @@ export default function Lesson8() {
       0.01,
       1000,
     );
-    camera.position.z = 3;
+    camera.position.z = 16;
+
+    gsap.to(camera.position, { z: 4.4, duration: 3 });
 
     let aspectRatio = window.innerWidth / window.innerHeight;
     rerender = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -62,7 +64,7 @@ export default function Lesson8() {
     const matcap1 = textureLoader.load(texture1);
 
     //Fonts
-    const textGeometry = new THREE.TextGeometry('Szczury lury', {
+    const textGeometry = new THREE.TextGeometry('Czesio Cheetos', {
       font: new THREE.Font(typefaceFont),
       size: 0.5,
       height: 0.2,
@@ -97,19 +99,21 @@ export default function Lesson8() {
     //add donuts
     const torusGeo = new THREE.TorusBufferGeometry(0.025, 0.02, 15, 45);
 
-    for (let i = 0; i < 500; i++) {
+    const donutGroup = new THREE.Group();
+    for (let i = 0; i < 3500; i++) {
       const torus = new THREE.Mesh(torusGeo, material);
       torus.position.set(
-        (Math.random() - 0.5) * 6,
-        (Math.random() - 0.5) * 6,
-        (Math.random() - 0.5) * 6,
+        (Math.random() - 0.5) * 16,
+        (Math.random() - 0.5) * 16,
+        (Math.random() - 0.5) * 16,
       );
       const scaleValue = Math.random();
       torus.scale.set(scaleValue, scaleValue, scaleValue);
       torus.rotation.x = Math.random() * Math.PI * 0.35;
       torus.rotation.y = Math.random() * Math.PI * 0.35;
-      scene.add(torus);
+      donutGroup.add(torus);
     }
+    scene.add(donutGroup);
     console.timeEnd('donuts');
 
     camera.lookAt(text.position);
@@ -117,9 +121,11 @@ export default function Lesson8() {
     const loop = () => {
       const elapsedTime = clock.getElapsedTime();
       //   Update controls; zeby Damping działał
-
+      donutGroup.rotation.x = elapsedTime * 0.025;
+      donutGroup.rotation.y = elapsedTime * 0.025;
+      camera.position.x = Math.sin(elapsedTime);
+      camera.position.y = Math.cos(elapsedTime);
       controls.update();
-
       rerender.render(scene, camera);
       requestAnimationFrame(loop);
     };
