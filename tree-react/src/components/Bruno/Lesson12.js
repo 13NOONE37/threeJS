@@ -139,25 +139,25 @@ export default function Lesson12() {
     // texture9.magFilter = THREE.NearestFilter;
 
     //Standard material
-    // const mainMaterial = new THREE.MeshStandardMaterial();
-    // // mainMaterial.metalness = 0.45;
-    // // mainMaterial.roughness = 0.45; jesli używamy tekstu z metalem i roughness trzeba to wyłączyć aby było ok
-    // mainMaterial.map = texture1;
-    // mainMaterial.aoMap = texture3; //dodajemy teksture zawierającą cienie i uzyskujemy bardzo ciekawy efekt
-    // mainMaterial.aoMapIntensity = 1;
-    // mainMaterial.displacementMap = texture7;
-    // mainMaterial.displacementScale = 0.1;
-    // mainMaterial.metalnessMap = texture4;
-    // mainMaterial.roughnessMap = texture5;
-    // mainMaterial.normalMap = texture6;
-    // mainMaterial.normalScale.set(0.5, 0.5);
-    // mainMaterial.transparent = true;
-    // mainMaterial.alphaMap = texture2;
-
     const mainMaterial = new THREE.MeshStandardMaterial();
-    mainMaterial.metalness = 0.7;
-    mainMaterial.roughness = 0.2;
-    mainMaterial.envMap = enviromentTextures;
+    // mainMaterial.metalness = 0.45;
+    // mainMaterial.roughness = 0.45; jesli używamy tekstu z metalem i roughness trzeba to wyłączyć aby było ok
+    mainMaterial.map = texture1;
+    mainMaterial.aoMap = texture3; //dodajemy teksture zawierającą cienie i uzyskujemy bardzo ciekawy efekt
+    mainMaterial.aoMapIntensity = 1;
+    mainMaterial.displacementMap = texture7;
+    mainMaterial.displacementScale = 0.1;
+    mainMaterial.metalnessMap = texture4;
+    mainMaterial.roughnessMap = texture5;
+    mainMaterial.normalMap = texture6;
+    mainMaterial.normalScale.set(0.5, 0.5);
+    mainMaterial.transparent = true;
+    mainMaterial.alphaMap = texture2;
+
+    // const mainMaterial = new THREE.MeshStandardMaterial();
+    // mainMaterial.metalness = 0.7;
+    // mainMaterial.roughness = 0.2;
+    // mainMaterial.envMap = enviromentTextures;
 
     //debug panel
 
