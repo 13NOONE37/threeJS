@@ -55,9 +55,10 @@ export default function Lesson8() {
     camera.position.y = 9;
 
     let aspectRatio = window.innerWidth / window.innerHeight;
-    rerender = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    rerender = new THREE.WebGLRenderer({ antialias: true });
     rerender.shadowMap.enabled = true;
     rerender.shadowMap.type = THREE.PCFSoftShadowMap;
+    rerender.setClearColor('#262837');
 
     rerender.setSize(window.innerWidth, window.innerHeight);
     rerender.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //ustawia maksymalnie pixelRatio na 2 jesli pixelRatio urzadzenia jest wieksze od 2
@@ -73,7 +74,7 @@ export default function Lesson8() {
 
     const controls = new OrbitControls(camera, box.current);
     controls.minDistance = 4;
-    controls.maxDistance = 40;
+    controls.maxDistance = 35;
     controls.enableDamping = true;
 
     //models
@@ -101,9 +102,23 @@ export default function Lesson8() {
     const grassColor = textureLoader.load(grass2);
     const grassNormal = textureLoader.load(grass3);
     const grassRough = textureLoader.load(grass4);
+
+    grassAmbient.repeat.set(8, 8);
+    grassColor.repeat.set(8, 8);
+    grassNormal.repeat.set(8, 8);
+    grassRough.repeat.set(8, 8);
+
+    grassAmbient.wrapS = THREE.RepeatWrapping;
+    grassAmbient.wrapT = THREE.RepeatWrapping;
+
     grassColor.wrapS = THREE.RepeatWrapping;
     grassColor.wrapT = THREE.RepeatWrapping;
-    grassColor.repeat.set(4, 4);
+
+    grassNormal.wrapS = THREE.RepeatWrapping;
+    grassNormal.wrapT = THREE.RepeatWrapping;
+
+    grassRough.wrapS = THREE.RepeatWrapping;
+    grassRough.wrapT = THREE.RepeatWrapping;
 
     const brickAmbient = textureLoader.load(brick1);
     const brickColor = textureLoader.load(brick2);
@@ -134,11 +149,13 @@ export default function Lesson8() {
     const pointLight = new THREE.PointLight(moonColor, 0.7);
     pointLight.position.set(8, 10, 8);
     pointLight.castShadow = true;
+    pointLight.shadow.mapSize.width = 256;
+    pointLight.shadow.mapSize.height = 256;
+    pointLight.shadow.camera.far = 7;
+
     scene.add(pointLight);
     //shadows
 
-    const axes = new THREE.AxesHelper(22);
-    scene.add(axes);
     //shapes
 
     //grass
@@ -154,15 +171,16 @@ export default function Lesson8() {
 
     const plane = new THREE.Mesh(planeGeometry, planeMaterial);
     plane.receiveShadow = true;
+
     plane.rotation.x = -Math.PI * 0.5;
     plane.geometry.setAttribute(
       'uv2',
-      new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2),
+      new THREE.Float32BufferAttribute(plane.geometry.attributes.uv.array, 2),
     );
     grassGroup.add(plane);
 
     //fog
-    scene.fog = new THREE.FogExp2(0xefd1b5, 0.025);
+    scene.fog = new THREE.Fog(0xefd1b5, 1, 45);
 
     //graves
     const gravesGrup = new THREE.Group();
@@ -176,6 +194,7 @@ export default function Lesson8() {
       const z = Math.cos(angle) * radius;
 
       const grave = new THREE.Mesh(graveGeometry, graveMaterial);
+      grave.castShadow = true;
       grave.position.set(x, 0.3, z);
       grave.rotation.z = z;
       gravesGrup.add(grave);
@@ -183,22 +202,6 @@ export default function Lesson8() {
     grassGroup.add(gravesGrup);
 
     //ghosts
-    const pointLight1 = new THREE.SpotLight(0xcc0000, 0.4, 1, 1, 1, 1);
-    const pointLight2 = new THREE.SpotLight(0xcc00cc, 0.4);
-    const pointLight3 = new THREE.SpotLight(0x0000cc, 0.4);
-    const pointLight4 = new THREE.SpotLight(0x00cc00, 0.4);
-
-    pointLight1.position.y = 3;
-    pointLight2.position.y = 3;
-    pointLight3.position.y = 3;
-    pointLight4.position.y = 3;
-    scene.add(
-      pointLight1,
-      pointLight1.target,
-      pointLight2,
-      pointLight3,
-      pointLight4,
-    );
 
     scene.add(grassGroup);
     //house
@@ -215,32 +218,34 @@ export default function Lesson8() {
     const houseWalls = new THREE.Mesh(houseWallsGeometry, houseWallsMaterial);
     houseWalls.geometry.setAttribute(
       'uv2',
-      new THREE.BufferAttribute(houseWalls.geometry.attributes.uv.array, 2),
+      new THREE.Float32BufferAttribute(
+        houseWalls.geometry.attributes.uv.array,
+        2,
+      ),
     );
     houseWalls.castShadow = true;
     houseWalls.position.y += 1.5;
     houseGroup.add(houseWalls);
 
     //door
-    const doorGeometry = new THREE.PlaneBufferGeometry(1.5, 2);
+    const doorGeometry = new THREE.PlaneBufferGeometry(1.5, 2, 50, 50);
     const doorMaterial = new THREE.MeshStandardMaterial({
       map: doorColor,
       aoMap: doorAmbient,
       displacementMap: doorHeight,
-      displacementScale: 0.2,
+      displacementScale: 0.1,
       metalnessMap: doorMetalness,
       roughnessMap: doorRough,
       normalMap: doorNormal,
       transparent: true,
       alphaMap: doorAlpha,
     });
-
     const door = new THREE.Mesh(doorGeometry, doorMaterial);
     door.geometry.setAttribute(
       'uv2',
-      new THREE.BufferAttribute(door.geometry.attributes.uv.array, 2),
+      new THREE.Float32BufferAttribute(door.geometry.attributes.uv.array, 2),
     );
-    door.position.set(0, 1, 2.51);
+    door.position.set(0, 1, 2.5);
     houseGroup.add(door);
     //roof
     const roofGeometry = new THREE.ConeBufferGeometry(4.25, 2, 4);
@@ -253,19 +258,42 @@ export default function Lesson8() {
       aoMapIntensity: 1.6,
     });
     const roof = new THREE.Mesh(roofGeometry, roofMaterial);
-    roof.castShadow = true;
+    // roof.castShadow = true;
 
     roof.position.y = 4;
     roof.rotation.y = Math.PI * 0.25;
     houseGroup.add(roof);
 
     //house lamp
-    const houseLight = new THREE.PointLight(0x00ffff, 0.9, 4, 1);
+    const houseLight = new THREE.PointLight(0x00ffff, 1, 7);
     houseLight.position.set(0, 3, 3);
+    houseLight.castShadow = true;
     houseGroup.add(houseLight);
     // scene.add(new THREE.PointLightHelper(houseLight));
 
     scene.add(houseGroup);
+
+    //ghosts
+    const ghost1 = new THREE.PointLight('#ff00ff', 2, 3);
+    const ghost2 = new THREE.PointLight('#00ffff', 2, 3);
+    const ghost3 = new THREE.PointLight('#ffff00', 2, 3);
+    ghost1.castShadow = true;
+    ghost1.shadow.mapSize.width = 256;
+    ghost1.shadow.mapSize.height = 256;
+    ghost1.shadow.camera.far = 7;
+
+    ghost2.castShadow = true;
+    ghost2.shadow.mapSize.width = 256;
+    ghost2.shadow.mapSize.height = 256;
+    ghost2.shadow.camera.far = 7;
+
+    ghost3.castShadow = true;
+    ghost3.shadow.mapSize.width = 256;
+    ghost3.shadow.mapSize.height = 256;
+    ghost3.shadow.camera.far = 7;
+
+    scene.add(ghost1, ghost2, ghost3);
+
     //control
     const gui = new dat.GUI();
     gui.add(doorMaterial, 'metalness').min(0).max(1).step(0.0001);
@@ -284,17 +312,28 @@ export default function Lesson8() {
     const loop = () => {
       const elapsedTime = clock.getElapsedTime();
 
-      pointLight1.target.position.x = Math.sin(elapsedTime * 0.1);
-      pointLight1.target.position.z = Math.cos(elapsedTime * 0.1);
+      const ghost1Angle = elapsedTime * 0.5;
 
-      pointLight2.position.x = Math.sin(elapsedTime * 0.4);
-      pointLight2.position.z = Math.cos(elapsedTime * 0.4);
+      ghost1.position.x = Math.sin(ghost1Angle) * 4;
+      ghost1.position.z = Math.cos(ghost1Angle) * 4;
+      ghost1.position.y =
+        Math.cos(elapsedTime * 3) + Math.cos(elapsedTime * 0.5);
 
-      pointLight3.position.x = Math.sin(elapsedTime * 0.01);
-      pointLight3.position.z = Math.cos(elapsedTime * 0.01);
+      const ghost2Angle = -elapsedTime * 0.3;
 
-      pointLight4.position.x = Math.sin(elapsedTime * 0.001);
-      pointLight4.position.z = Math.cos(elapsedTime * 0.001);
+      ghost2.position.x =
+        Math.sin(ghost2Angle) * (7 + Math.sin(elapsedTime * 0.32));
+      ghost2.position.z =
+        Math.cos(ghost2Angle) * (7 + Math.sin(elapsedTime * 0.5));
+      ghost2.position.y =
+        Math.cos(elapsedTime * 4) + Math.cos(elapsedTime * 1.5);
+
+      const ghost3Angle = elapsedTime * 0.4;
+
+      ghost3.position.x = Math.sin(ghost3Angle) * 5;
+      ghost3.position.z = Math.cos(ghost3Angle) * 5;
+      ghost3.position.y =
+        Math.cos(elapsedTime * 5) + Math.cos(elapsedTime * 2.5);
 
       controls.update();
       rerender.render(scene, camera);
