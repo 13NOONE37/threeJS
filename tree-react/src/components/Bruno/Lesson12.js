@@ -6,7 +6,7 @@ import gsap from 'gsap';
 import { GeometryUtils } from 'three';
 import * as dat from 'dat.gui';
 
-import metalTestTexture from '../textures/MetalFloor/Metal_Plate_048_basecolor.jpg';
+import metalTestTexture from '../textures/MetalFloor/color.jpg';
 import colorTexture from '../textures/door/color.jpg';
 import alphaTexture from '../textures/door/alpha.jpg';
 import heightTexture from '../textures/door/height.jpg';

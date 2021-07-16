@@ -24,6 +24,16 @@ import door5 from '../textures/house/door/alpha.jpg';
 import door6 from '../textures/house/door/height.jpg';
 import door7 from '../textures/house/door/metalness.jpg';
 
+import lamp1 from '../textures/MetalFloor/ambientOcclusion.jpg';
+import lamp2 from '../textures/MetalFloor/color.jpg';
+import lamp3 from '../textures/MetalFloor/normal.jpg';
+import lamp4 from '../textures/MetalFloor/roughness.jpg';
+import lamp5 from '../textures/MetalFloor/height.png';
+import lamp6 from '../textures/MetalFloor/metallic.jpg';
+
+import ghastModel from '../textures/minecraft-ghast/source/ghast.obj';
+import ghastTexture from '../textures/minecraft-ghast/textures/ghast.png';
+
 export default function Lesson8() {
   const box = useRef(null);
 
@@ -66,6 +76,11 @@ export default function Lesson8() {
     controls.maxDistance = 40;
     controls.enableDamping = true;
 
+    //models
+    const modelLoader = new THREE.ObjectLoader();
+    const ghost = modelLoader.load(ghastModel);
+    console.log(ghost);
+
     //Textures
     const loaderManager = new THREE.LoadingManager();
     loaderManager.onStart = () => {
@@ -103,6 +118,12 @@ export default function Lesson8() {
     const doorHeight = textureLoader.load(door6);
     const doorMetalness = textureLoader.load(door7);
 
+    const lampAmbient = textureLoader.load(lamp1);
+    const lampColor = textureLoader.load(lamp2);
+    const lampNormal = textureLoader.load(lamp3);
+    const lampRough = textureLoader.load(lamp4);
+    const lampHeight = textureLoader.load(lamp5);
+    const lampMetalness = textureLoader.load(lamp6);
     //Config
     const moonColor = new THREE.Color('hsl(235, 51%, 40%)');
 
@@ -143,46 +164,41 @@ export default function Lesson8() {
     //fog
     scene.fog = new THREE.FogExp2(0xefd1b5, 0.025);
 
-    //lamps
-    const lampsGroup = new THREE.Group();
-    const lamp = new THREE.Group();
+    //graves
+    const gravesGrup = new THREE.Group();
 
-    const metalMaterial = new THREE.MeshStandardMaterial({
-      color: 0xf0f0f0,
-    });
-    const tubeBottomGeometry = new THREE.CylinderBufferGeometry(
-      0.1,
-      0.1,
-      1,
-      15,
+    const graveGeometry = new THREE.BoxBufferGeometry(0.5, 0.6, 0.2);
+    const graveMaterial = new THREE.MeshStandardMaterial({ color: 0x222222 });
+    for (let i = 0; i < 100; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = 3.2 + Math.random() * 6;
+      const x = Math.sin(angle) * radius;
+      const z = Math.cos(angle) * radius;
+
+      const grave = new THREE.Mesh(graveGeometry, graveMaterial);
+      grave.position.set(x, 0.3, z);
+      grave.rotation.z = z;
+      gravesGrup.add(grave);
+    }
+    grassGroup.add(gravesGrup);
+
+    //ghosts
+    const pointLight1 = new THREE.SpotLight(0xcc0000, 0.4, 1, 1, 1, 1);
+    const pointLight2 = new THREE.SpotLight(0xcc00cc, 0.4);
+    const pointLight3 = new THREE.SpotLight(0x0000cc, 0.4);
+    const pointLight4 = new THREE.SpotLight(0x00cc00, 0.4);
+
+    pointLight1.position.y = 3;
+    pointLight2.position.y = 3;
+    pointLight3.position.y = 3;
+    pointLight4.position.y = 3;
+    scene.add(
+      pointLight1,
+      pointLight1.target,
+      pointLight2,
+      pointLight3,
+      pointLight4,
     );
-    const tubeTopGeometry = new THREE.CylinderBufferGeometry(0.2, 0.2, 0.3, 15);
-
-    const tubeBottom = new THREE.Mesh(tubeBottomGeometry, metalMaterial);
-    const tubeTop = new THREE.Mesh(tubeTopGeometry, metalMaterial);
-    const lightSource = new THREE.SpotLight(
-      new THREE.Color('#ff5555'),
-      1.5, //intenstywnosc
-      15, //odleglosc
-      Math.PI * 0.03, //szerokosc swiatla
-      0.5, //rozproszczenie
-      1,
-    );
-
-    const lightHelper = new THREE.SpotLightHelper(lightSource);
-    scene.add(lightHelper);
-
-    tubeBottom.position.x = 8;
-    tubeTop.position.x = 8;
-    tubeTop.position.y = 0.5;
-    lightSource.position.x = 8;
-    lightSource.position.y = 1.5;
-
-    lamp.add(tubeBottom, tubeTop, lightSource, lightSource.target);
-
-    lampsGroup.add(lamp); // close in loop with random position
-    grassGroup.add(lampsGroup);
-    //
 
     scene.add(grassGroup);
     //house
@@ -243,6 +259,12 @@ export default function Lesson8() {
     roof.rotation.y = Math.PI * 0.25;
     houseGroup.add(roof);
 
+    //house lamp
+    const houseLight = new THREE.PointLight(0x00ffff, 0.9, 4, 1);
+    houseLight.position.set(0, 3, 3);
+    houseGroup.add(houseLight);
+    // scene.add(new THREE.PointLightHelper(houseLight));
+
     scene.add(houseGroup);
     //control
     const gui = new dat.GUI();
@@ -261,6 +283,18 @@ export default function Lesson8() {
     const clock = new THREE.Clock();
     const loop = () => {
       const elapsedTime = clock.getElapsedTime();
+
+      pointLight1.target.position.x = Math.sin(elapsedTime * 0.1);
+      pointLight1.target.position.z = Math.cos(elapsedTime * 0.1);
+
+      pointLight2.position.x = Math.sin(elapsedTime * 0.4);
+      pointLight2.position.z = Math.cos(elapsedTime * 0.4);
+
+      pointLight3.position.x = Math.sin(elapsedTime * 0.01);
+      pointLight3.position.z = Math.cos(elapsedTime * 0.01);
+
+      pointLight4.position.x = Math.sin(elapsedTime * 0.001);
+      pointLight4.position.z = Math.cos(elapsedTime * 0.001);
 
       controls.update();
       rerender.render(scene, camera);

@@ -5,7 +5,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import gsap from 'gsap';
 import { GeometryUtils } from 'three';
 
-import metalTestTexture from '../textures/MetalFloor/Metal_Plate_048_basecolor.jpg';
+import metalTestTexture from '../textures/MetalFloor/color.jpg';
 import colorTexture from '../textures/minecraft.png';
 import alphaTexture from '../textures/door/alpha.jpg';
 import heightTexture from '../textures/door/height.jpg';
