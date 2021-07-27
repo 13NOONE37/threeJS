@@ -91,6 +91,8 @@ export default function Lesson8() {
       const elapsedTime = clock.getElapsedTime();
 
       //   particles.rotation.y = elapsedTime * 0.03; //whole particles animationDelay:
+
+      //its bad idea to do that like below, better use custom shader
       for (let i = 0; i < count; i++) {
         const i3 = i * 3;
         const x = bufferGeometry.attributes.position.array[i3];
