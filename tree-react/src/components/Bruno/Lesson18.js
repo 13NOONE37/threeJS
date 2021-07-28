@@ -5,7 +5,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import gsap from 'gsap';
 import * as dat from 'dat.gui';
 
-import particleTextureFile from '../textures/particles/4.png';
+import texture1 from '../textures/particles/1.png';
 export default function Lesson8() {
   const box = useRef(null);
 
@@ -48,6 +48,8 @@ export default function Lesson8() {
     controls.enableDamping = true;
 
     //textture
+    const textureLoader = new THREE.TextureLoader();
+    const star = textureLoader.load(texture1);
 
     //Galaxy
     const parameters = {
@@ -60,6 +62,7 @@ export default function Lesson8() {
       randomnessPower: 3,
       insideColor: '#ff6030',
       outsideColor: '#1b3984',
+      galaxyRotationSpeed: 55,
     };
 
     let galaxyGeometry = null;
@@ -135,6 +138,8 @@ export default function Lesson8() {
         depthWrite: false,
         blending: THREE.AdditiveBlending,
         vertexColors: true,
+        transparent: true,
+        alphaMap: star,
       });
 
       galaxy = new THREE.Points(galaxyGeometry, galaxyMaterial);
@@ -196,6 +201,13 @@ export default function Lesson8() {
       .step(0.001)
       .onFinishChange(generateGalaxy);
     gui
+      .add(parameters, 'galaxyRotationSpeed')
+      .name('Galaxy rotation speed')
+      .min(1)
+      .max(100)
+      .step(1)
+      .onFinishChange(generateGalaxy);
+    gui
       .addColor(parameters, 'insideColor')
       .name('Particles inside color')
       .onFinishChange(generateGalaxy);
@@ -208,6 +220,7 @@ export default function Lesson8() {
     const loop = () => {
       const elapsedTime = clock.getElapsedTime();
 
+      galaxy.rotation.y = (elapsedTime / 100) * parameters.galaxyRotationSpeed;
       controls.update();
       rerender.render(scene, camera);
       requestAnimationFrame(loop);
