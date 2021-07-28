@@ -62,7 +62,7 @@ export default function Lesson8() {
       randomnessPower: 3,
       insideColor: '#ff6030',
       outsideColor: '#1b3984',
-      galaxyRotationSpeed: 55,
+      galaxyRotationSpeed: 15,
     };
 
     let galaxyGeometry = null;
