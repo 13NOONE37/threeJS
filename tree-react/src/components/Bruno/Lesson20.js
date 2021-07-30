@@ -81,7 +81,7 @@ export default function Lesson8() {
       objectsToUpdate.forEach((object) => {
         //remove body
         object.body.removeEventListener('collide', playSound);
-        world.remove(object.body);
+        world.removeBody(object.body);
 
         //remove mesh
         scene.remove(object.mesh);
@@ -95,7 +95,7 @@ export default function Lesson8() {
     let currentSoundTime = 0;
     const hitSound = new Audio(sound1);
     const playSound = (collision) => {
-      if (Date.now() > currentSoundTime + 35) {
+      if (Date.now() > currentSoundTime + 10) {
         // delay between sound play
         const strengthImpact = Math.min(
           collision.contact.getImpactVelocityAlongNormal(),
