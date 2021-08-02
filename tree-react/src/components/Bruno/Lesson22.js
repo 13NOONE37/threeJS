@@ -2,21 +2,17 @@ import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { Color, Geometry, MeshBasicMaterial, PointsMaterial } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 
-import gsap from 'gsap';
 import * as dat from 'dat.gui';
-import * as CANNON from 'cannon-es';
 
-import texturePx from '../textures/environmentMaps2/0/px.png';
-import textureNx from '../textures/environmentMaps2/0/nx.png';
-import texturePy from '../textures/environmentMaps2/0/py.png';
-import textureNy from '../textures/environmentMaps2/0/ny.png';
-import texturePz from '../textures/environmentMaps2/0/pz.png';
-import textureNz from '../textures/environmentMaps2/0/nz.png';
-
-import sound1 from '../textures/hit.mp3';
+import texturePx from '../textures/environmentMaps/0/px.jpg';
+import textureNx from '../textures/environmentMaps/0/nx.jpg';
+import texturePy from '../textures/environmentMaps/0/py.jpg';
+import textureNy from '../textures/environmentMaps/0/ny.jpg';
+import texturePz from '../textures/environmentMaps/0/pz.jpg';
+import textureNz from '../textures/environmentMaps/0/nz.jpg';
 
 export default function Lesson8() {
   const box = useRef(null);
@@ -52,88 +48,109 @@ export default function Lesson8() {
     rerender.shadowMap.enabled = true;
     rerender.shadowMap.type = THREE.PCFSoftShadowMap;
 
+      //For good realistic render
+    rerender.physicallyCorrectLights=true;
+    rerender.outputEncoding=THREE.sRGBEncoding;
+    rerender.toneMapping = THREE.ReinhardToneMapping;
+    rerender.toneMappingExposure = 3;
+      
+
     box.current.appendChild(rerender.domElement);
 
     const handleResize = () => {
       aspectRatio = window.innerWidth / window.innerHeight;
       rerender.setSize(window.innerWidth, window.innerHeight);
       rerender.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // jeśli użytkownik przeniesie na inny ekran również zmieniamy pixelRatio
-
+      
       camera.aspect = aspectRatio;
       camera.updateProjectionMatrix();
     };
     const controls = new OrbitControls(camera, box.current);
     controls.enableDamping = true;
+    
+    const gui = new dat.GUI();
+    const debugObject = {envIntensity:5}
 
-    /**
-     * Textures
-     */
-    const textureLoader = new THREE.TextureLoader();
+    //Loaders
+    const gltfLoader = new GLTFLoader();
     const cubeTextureLoader = new THREE.CubeTextureLoader();
 
-    //Models
-    const dracoLoader = new DRACOLoader();
-    dracoLoader.setDecoderPath('./draco/'); //workery skopiowane do public
-
-    const gltfLoader = new GLTFLoader();
-    gltfLoader.setDRACOLoader(dracoLoader);
-
-    let mixer = null;
-    gltfLoader.load(
-    //   './hamburger.glb',
-    './kaktus.gltf',
-      (model) => {
-        console.log(model);
-        console.log('success');
-        model.scene.scale.set(258880,258880,258880)
-
-        // while (model.scene.children.length) {
-        //   scene.add(model.scene.children[0]);
-        // }
-        scene.add(model.scene);
-      },
-      () => {
-        console.log('progress');
-      },
-      (error) => {
-        console.log('error', error);
-      },
+    
+    const updateAllMaterials = () => {
+     scene.traverse((child) => {
+      if(child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial){
+        console.log(child);
+        child.material.envMap = enviormentMap;
+        child.material.envMapIntensity=debugObject.envIntensity;
+        child.material.needsUpdate = true;
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+     })
+    }
+    
+    //test sphere
+    const testSphere = new THREE.Mesh(
+      new THREE.SphereBufferGeometry(0.5, 24,24),
+      new THREE.MeshStandardMaterial()
     );
+    // scene.add(testSphere);
 
-    const floor = new THREE.Mesh(
-      new THREE.PlaneBufferGeometry(10, 10),
-      new THREE.MeshStandardMaterial({
-        color: '#777777',
-        metalness: 0.3,
-        roughness: 0.4,
-      }),
-    );
-    floor.receiveShadow = true;
-    floor.rotation.x = -Math.PI * 0.5;
-    scene.add(floor);
+    //textures
+      const enviormentMap =  cubeTextureLoader.load([texturePx, textureNx, texturePy, textureNy, texturePz, textureNz])
+     enviormentMap.encoding = THREE.sRGBEncoding;
+      scene.background = enviormentMap;
+      scene.environment = enviormentMap;
+   
+      //lights
+      const directionalLight = new THREE.DirectionalLight('#ffffff', 5);
+      directionalLight.castShadow=true;
+      directionalLight.position.set(0,5,-5);
+      directionalLight.shadow.camera.far = 15;
+      directionalLight.shadow.mapSize.set(1024,1024)
 
-    /**
-     * Lights
-     */
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-    scene.add(ambientLight);
+      directionalLight.shadow.normalBias = 0.051; //for burger
+      scene.add(directionalLight)
+      // scene.add(new THREE.CameraHelper(directionalLight.shadow.camera))
+      //model
+      gltfLoader.load(
+        'models/FlightHelmet/glTF/FlightHelmet.gltf', 
+        // 'hamburger.glb', 
+      (gltf)=>{
+        console.log('loaded');
+        console.log(gltf);
+        gltf.scene.scale.set(7,7,7);
+        // gltf.scene.scale.set(0.3,0.3,0.3) //for burger
+        
+        gltf.scene.position.y=-2;
+        scene.add(gltf.scene)
+        gui.add(gltf.scene.rotation, 'y').
+        min(-Math.PI)
+        .max(Math.PI).
+        step(0.001)
+        .name("Rotation")
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.61);
-    directionalLight.castShadow = true;
-    directionalLight.shadow.mapSize.set(1024, 1024);
-    directionalLight.shadow.camera.far = 15;
-    directionalLight.shadow.camera.left = -7;
-    directionalLight.shadow.camera.top = 7;
-    directionalLight.shadow.camera.right = 7;
-    directionalLight.shadow.camera.bottom = -7;
-    directionalLight.position.set(5, 5, 5);
-    scene.add(directionalLight);
+        updateAllMaterials();
+      })
 
-    /**
-     * Debug
-     */
-    const gui = new dat.GUI();
-    const debugObject = {};
+    //Debug
+    gui.add(directionalLight, 'intensity').min(0.001).max(10).step(0.001)
+    gui.add(directionalLight.position, 'x').min(-5).max(5).step(0.001)
+    gui.add(directionalLight.position, 'y').min(-5).max(5).step(0.001)
+    gui.add(directionalLight.position, 'z').min(-5).max(5).step(0.001)
+    gui.add(directionalLight.shadow, 'normalBias').min(-5).max(5).step(0.0001);
+    
+    gui.add(debugObject, 'envIntensity').min(0).max(10).step(0.01).onChange(updateAllMaterials)
+    gui.add(rerender, 'toneMapping', {
+      Linear: THREE.NoToneMapping,
+      Reinhard: THREE.ReinhardToneMapping,
+      Cineon: THREE.CineonToneMapping,
+      ACESFilmic: THREE.ACESFilmicToneMapping,
+    }).onFinishChange(()=>{
+      rerender.toneMapping = Number(rerender.toneMapping)
+      updateAllMaterials()
+    })
+    gui.add(rerender, 'toneMappingExposure').min(0.1).max(10).step(0.01);
 
     //Animation
     const clock = new THREE.Clock();
