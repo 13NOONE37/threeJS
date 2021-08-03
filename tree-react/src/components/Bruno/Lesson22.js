@@ -114,7 +114,8 @@ export default function Lesson8() {
       // scene.add(new THREE.CameraHelper(directionalLight.shadow.camera))
       //model
       gltfLoader.load(
-        'models/FlightHelmet/glTF/FlightHelmet.gltf', 
+        // 'models/FlightHelmet/glTF/FlightHelmet.gltf', 
+        'portal.gltf',
         // 'hamburger.glb', 
       (gltf)=>{
         console.log('loaded');
