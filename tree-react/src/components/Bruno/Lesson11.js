@@ -1,18 +1,18 @@
-import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
-import { Geometry } from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import gsap from 'gsap';
-import { GeometryUtils } from 'three';
+import React, { useEffect, useRef } from "react";
+import * as THREE from "three";
+import { Geometry } from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import gsap from "gsap";
+import { GeometryUtils } from "three";
 
-import metalTestTexture from '../textures/MetalFloor/color.jpg';
-import colorTexture from '../textures/minecraft.png';
-import alphaTexture from '../textures/door/alpha.jpg';
-import heightTexture from '../textures/door/height.jpg';
-import normalTexture from '../textures/door/normal.jpg';
-import ambientOcclusionTexture from '../textures/door/ambientOcclusion.jpg';
-import metalnessTexture from '../textures/door/metalness.jpg';
-import roughnessTexture from '../textures/door/roughness.jpg';
+import metalTestTexture from "../textures/MetalFloor/color.jpg";
+import colorTexture from "../textures/minecraft.png";
+import alphaTexture from "../textures/door/alpha.jpg";
+import heightTexture from "../textures/door/height.jpg";
+import normalTexture from "../textures/door/normal.jpg";
+import ambientOcclusionTexture from "../textures/door/ambientOcclusion.jpg";
+import metalnessTexture from "../textures/door/metalness.jpg";
+import roughnessTexture from "../textures/door/roughness.jpg";
 
 export default function Lesson8() {
   const box = useRef(null);
@@ -22,32 +22,32 @@ export default function Lesson8() {
       x: 0,
       y: 0,
     };
-    window.addEventListener('mousemove', (e) => {
+    window.addEventListener("mousemove", (e) => {
       cursor.x = e.clientX / window.innerWidth - 0.5;
       cursor.y = -(e.clientY / window.innerHeight - 0.5);
     });
 
-    let rerender, camera, scene;
+    let renderer, camera, scene;
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(
       75, //45 or 75 is the most popular
       window.innerWidth / window.innerHeight,
       0.01,
-      1000,
+      1000
     );
     camera.position.z = 3;
 
     let aspectRatio = window.innerWidth / window.innerHeight;
-    rerender = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    rerender.setSize(window.innerWidth, window.innerHeight);
-    rerender.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //ustawia maksymalnie pixelRatio na 2 jesli pixelRatio urzadzenia jest wieksze od 2
-    box.current.appendChild(rerender.domElement);
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //ustawia maksymalnie pixelRatio na 2 jesli pixelRatio urzadzenia jest wieksze od 2
+    box.current.appendChild(renderer.domElement);
 
     const handleResize = () => {
       aspectRatio = window.innerWidth / window.innerHeight;
-      rerender.setSize(window.innerWidth, window.innerHeight);
-      rerender.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // jeśli użytkownik przeniesie na inny ekran również zmieniamy pixelRatio
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // jeśli użytkownik przeniesie na inny ekran również zmieniamy pixelRatio
 
       camera.aspect = aspectRatio;
       camera.updateProjectionMatrix();
@@ -66,16 +66,16 @@ export default function Lesson8() {
     //Best
     const loadingManager = new THREE.LoadingManager(); //daje name informacje o ladowaniu; ktore zaladowane; w ilu procentach
     loadingManager.onStart = () => {
-      console.log('onStart');
+      console.log("onStart");
     };
     loadingManager.onProgress = () => {
-      console.log('onProgres'); //można użyć do paska ładowania
+      console.log("onProgres"); //można użyć do paska ładowania
     };
     loadingManager.onLoad = () => {
-      console.log('loaded');
+      console.log("loaded");
     };
     loadingManager.onError = () => {
-      console.log('error');
+      console.log("error");
     };
     const textureLoader = new THREE.TextureLoader(loadingManager);
     const texture = textureLoader.load(colorTexture);
@@ -131,12 +131,12 @@ export default function Lesson8() {
 
       controls.update();
       //texture.rotation = elapsedTime / 5; // rotate texture
-      rerender.render(scene, camera);
+      renderer.render(scene, camera);
       requestAnimationFrame(loop);
     };
     loop();
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
   }, []);
   return <div className="divFor3d" ref={box}></div>;
 }

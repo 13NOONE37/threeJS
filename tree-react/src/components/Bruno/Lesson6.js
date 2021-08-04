@@ -1,31 +1,31 @@
-import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
-import gsap from 'gsap';
+import React, { useEffect, useRef } from "react";
+import * as THREE from "three";
+import gsap from "gsap";
 
 export default function Lesson4() {
   const box = useRef(null);
 
   useEffect(() => {
-    let rerender, camera, scene;
+    let renderer, camera, scene;
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(
       75,
-      window.innerWidth / window.innerHeight,
+      window.innerWidth / window.innerHeight
     );
     camera.position.set(0, 1, 5);
 
-    rerender = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    rerender.setSize(window.innerWidth, window.innerHeight);
-    box.current.appendChild(rerender.domElement);
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    box.current.appendChild(renderer.domElement);
 
     const handleResize = () => {
-      rerender.setSize(window.innerWidth, window.innerHeight);
+      renderer.setSize(window.innerWidth, window.innerHeight);
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
     };
 
-    const colorBlue = new THREE.Color('hsl(110,54%,40%)');
+    const colorBlue = new THREE.Color("hsl(110,54%,40%)");
     const boxG = new THREE.BoxGeometry(1, 1, 1);
     const boxM = new THREE.MeshBasicMaterial({ color: colorBlue });
     const cube = new THREE.Mesh(boxG, boxM);
@@ -45,7 +45,7 @@ export default function Lesson4() {
       //   camera.position.y = Math.sin(elapsedTime);
       //   camera.position.x = Math.cos(elapsedTime);
       //   camera.lookAt(cube.position);
-      rerender.render(scene, camera);
+      renderer.render(scene, camera);
       requestAnimationFrame(loop);
     };
     loop();
@@ -58,12 +58,12 @@ export default function Lesson4() {
 
     //   cube.rotation.y += 0.001 * deltaTime;
 
-    //   rerender.render(scene, camera);
+    //   renderer.render(scene, camera);
     //   requestAnimationFrame(loop);
     // };
     // loop();
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
   }, []);
   return <div ref={box}></div>;
 }

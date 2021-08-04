@@ -1,28 +1,28 @@
-import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
-import { CubeTextureLoader, Geometry, Material, NearestFilter } from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import gsap from 'gsap';
-import { GeometryUtils } from 'three';
-import * as dat from 'dat.gui';
+import React, { useEffect, useRef } from "react";
+import * as THREE from "three";
+import { CubeTextureLoader, Geometry, Material, NearestFilter } from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import gsap from "gsap";
+import { GeometryUtils } from "three";
+import * as dat from "dat.gui";
 
-import metalTestTexture from '../textures/MetalFloor/color.jpg';
-import colorTexture from '../textures/door/color.jpg';
-import alphaTexture from '../textures/door/alpha.jpg';
-import heightTexture from '../textures/door/height.jpg';
-import normalTexture from '../textures/door/normal.jpg';
-import ambientOcclusionTexture from '../textures/door/ambientOcclusion.jpg';
-import metalnessTexture from '../textures/door/metalness.jpg';
-import roughnessTexture from '../textures/door/roughness.jpg';
-import matcapTexture from '../textures/matcaps/3.png';
-import gradientTexture from '../textures/gradients/5.jpg';
+import metalTestTexture from "../textures/MetalFloor/color.jpg";
+import colorTexture from "../textures/door/color.jpg";
+import alphaTexture from "../textures/door/alpha.jpg";
+import heightTexture from "../textures/door/height.jpg";
+import normalTexture from "../textures/door/normal.jpg";
+import ambientOcclusionTexture from "../textures/door/ambientOcclusion.jpg";
+import metalnessTexture from "../textures/door/metalness.jpg";
+import roughnessTexture from "../textures/door/roughness.jpg";
+import matcapTexture from "../textures/matcaps/3.png";
+import gradientTexture from "../textures/gradients/5.jpg";
 
-import env1 from '../textures/environmentMaps/4/px.png'; // positive X
-import env3 from '../textures/environmentMaps/4/py.png'; // positive Y
-import env2 from '../textures/environmentMaps/4/nx.png'; // negative X
-import env4 from '../textures/environmentMaps/4/ny.png'; // negative Y
-import env5 from '../textures/environmentMaps/4/pz.png'; // positive Z
-import env6 from '../textures/environmentMaps/4/nz.png'; // negative Z
+import env1 from "../textures/environmentMaps/4/px.png"; // positive X
+import env3 from "../textures/environmentMaps/4/py.png"; // positive Y
+import env2 from "../textures/environmentMaps/4/nx.png"; // negative X
+import env4 from "../textures/environmentMaps/4/ny.png"; // negative Y
+import env5 from "../textures/environmentMaps/4/pz.png"; // positive Z
+import env6 from "../textures/environmentMaps/4/nz.png"; // negative Z
 
 export default function Lesson12() {
   const box = useRef(null);
@@ -32,34 +32,34 @@ export default function Lesson12() {
       x: 0,
       y: 0,
     };
-    window.addEventListener('mousemove', (e) => {
+    window.addEventListener("mousemove", (e) => {
       cursor.x = e.clientX / window.innerWidth - 0.5;
       cursor.y = -(e.clientY / window.innerHeight - 0.5);
     });
 
-    let rerender, camera, scene;
+    let renderer, camera, scene;
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(
       75, //45 or 75 is the most popular
       window.innerWidth / window.innerHeight,
       0.01,
-      1000,
+      1000
     );
     camera.position.z = 3;
 
     let aspectRatio = window.innerWidth / window.innerHeight;
-    rerender = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    rerender.setSize(window.innerWidth, window.innerHeight);
-    rerender.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //ustawia maksymalnie pixelRatio na 2 jesli pixelRatio urzadzenia jest wieksze od 2
-    box.current.appendChild(rerender.domElement);
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //ustawia maksymalnie pixelRatio na 2 jesli pixelRatio urzadzenia jest wieksze od 2
+    box.current.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, box.current);
     controls.enableDamping = true;
     const handleResize = () => {
       aspectRatio = window.innerWidth / window.innerHeight;
-      rerender.setSize(window.innerWidth, window.innerHeight);
-      rerender.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // jeśli użytkownik przeniesie na inny ekran również zmieniamy pixelRatio
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // jeśli użytkownik przeniesie na inny ekran również zmieniamy pixelRatio
 
       camera.aspect = aspectRatio;
       camera.updateProjectionMatrix();
@@ -162,47 +162,47 @@ export default function Lesson12() {
     //debug panel
 
     const gui = new dat.GUI();
-    gui.add(mainMaterial, 'metalness').min(0).max(1).step(0.0001);
-    gui.add(mainMaterial, 'roughness').min(0).max(1).step(0.0001);
-    gui.add(mainMaterial, 'aoMapIntensity').min(0).max(5).step(0.0001);
-    gui.add(mainMaterial, 'displacementScale').min(0).max(1).step(0.0001);
+    gui.add(mainMaterial, "metalness").min(0).max(1).step(0.0001);
+    gui.add(mainMaterial, "roughness").min(0).max(1).step(0.0001);
+    gui.add(mainMaterial, "aoMapIntensity").min(0).max(5).step(0.0001);
+    gui.add(mainMaterial, "displacementScale").min(0).max(1).step(0.0001);
 
     const cube = new THREE.Mesh(
       new THREE.BoxBufferGeometry(1, 1, 1),
-      mainMaterial,
+      mainMaterial
     );
 
     //potrzebujemy skopiować koordynaty UV aby zadziałała teksture ambientColor
     cube.geometry.setAttribute(
-      'uv2',
-      new THREE.BufferAttribute(cube.geometry.attributes.uv.array, 2),
+      "uv2",
+      new THREE.BufferAttribute(cube.geometry.attributes.uv.array, 2)
     );
 
     const sphere = new THREE.Mesh(
       new THREE.SphereBufferGeometry(0.5, 64, 64),
-      mainMaterial,
+      mainMaterial
     );
     sphere.geometry.setAttribute(
-      'uv2',
-      new THREE.BufferAttribute(sphere.geometry.attributes.uv.array, 2),
+      "uv2",
+      new THREE.BufferAttribute(sphere.geometry.attributes.uv.array, 2)
     );
 
     const torus = new THREE.Mesh(
       new THREE.TorusBufferGeometry(0.3, 0.2, 64, 128),
-      mainMaterial,
+      mainMaterial
     );
     torus.geometry.setAttribute(
-      'uv2',
-      new THREE.BufferAttribute(torus.geometry.attributes.uv.array, 2),
+      "uv2",
+      new THREE.BufferAttribute(torus.geometry.attributes.uv.array, 2)
     );
 
     const plane = new THREE.Mesh(
       new THREE.PlaneBufferGeometry(1, 1, 100, 100),
-      mainMaterial,
+      mainMaterial
     );
     plane.geometry.setAttribute(
-      'uv2',
-      new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2),
+      "uv2",
+      new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2)
     );
 
     cube.position.x = -3;
@@ -235,11 +235,11 @@ export default function Lesson12() {
       sphere.rotation.x = elapsedTime * 0.1;
       torus.rotation.x = elapsedTime * 0.1;
       plane.rotation.x = elapsedTime * 0.1;
-      rerender.render(scene, camera);
+      renderer.render(scene, camera);
       requestAnimationFrame(loop);
     };
     loop();
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
   }, []);
   return <div className="divFor3d" ref={box}></div>;
 }

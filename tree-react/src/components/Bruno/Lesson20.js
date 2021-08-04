@@ -1,19 +1,19 @@
-import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
-import { Color, Geometry, MeshBasicMaterial, PointsMaterial } from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import gsap from 'gsap';
-import * as dat from 'dat.gui';
-import * as CANNON from 'cannon-es';
+import React, { useEffect, useRef } from "react";
+import * as THREE from "three";
+import { Color, Geometry, MeshBasicMaterial, PointsMaterial } from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import gsap from "gsap";
+import * as dat from "dat.gui";
+import * as CANNON from "cannon-es";
 
-import texturePx from '../textures/environmentMaps2/0/px.png';
-import textureNx from '../textures/environmentMaps2/0/nx.png';
-import texturePy from '../textures/environmentMaps2/0/py.png';
-import textureNy from '../textures/environmentMaps2/0/ny.png';
-import texturePz from '../textures/environmentMaps2/0/pz.png';
-import textureNz from '../textures/environmentMaps2/0/nz.png';
+import texturePx from "../textures/environmentMaps2/0/px.png";
+import textureNx from "../textures/environmentMaps2/0/nx.png";
+import texturePy from "../textures/environmentMaps2/0/py.png";
+import textureNy from "../textures/environmentMaps2/0/ny.png";
+import texturePz from "../textures/environmentMaps2/0/pz.png";
+import textureNz from "../textures/environmentMaps2/0/nz.png";
 
-import sound1 from '../textures/hit.mp3';
+import sound1 from "../textures/hit.mp3";
 
 export default function Lesson8() {
   const box = useRef(null);
@@ -23,19 +23,19 @@ export default function Lesson8() {
       x: 0,
       y: 0,
     };
-    window.addEventListener('mousemove', (e) => {
+    window.addEventListener("mousemove", (e) => {
       cursor.x = e.clientX / window.innerWidth - 0.5;
       cursor.y = -(e.clientY / window.innerHeight - 0.5);
     });
 
-    let rerender, camera, scene;
+    let renderer, camera, scene;
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(
       75, //45 or 75 is the most popular
       window.innerWidth / window.innerHeight,
       0.01,
-      1000,
+      1000
     );
     camera.position.x = 5;
     camera.position.y = 5;
@@ -43,18 +43,18 @@ export default function Lesson8() {
     camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     let aspectRatio = window.innerWidth / window.innerHeight;
-    rerender = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    rerender.setSize(window.innerWidth, window.innerHeight);
-    rerender.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //ustawia maksymalnie pixelRatio na 2 jesli pixelRatio urzadzenia jest wieksze od 2
-    rerender.shadowMap.enabled = true;
-    rerender.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //ustawia maksymalnie pixelRatio na 2 jesli pixelRatio urzadzenia jest wieksze od 2
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    box.current.appendChild(rerender.domElement);
+    box.current.appendChild(renderer.domElement);
 
     const handleResize = () => {
       aspectRatio = window.innerWidth / window.innerHeight;
-      rerender.setSize(window.innerWidth, window.innerHeight);
-      rerender.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // jeśli użytkownik przeniesie na inny ekran również zmieniamy pixelRatio
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // jeśli użytkownik przeniesie na inny ekran również zmieniamy pixelRatio
 
       camera.aspect = aspectRatio;
       camera.updateProjectionMatrix();
@@ -80,16 +80,16 @@ export default function Lesson8() {
     debugObject.reset = () => {
       objectsToUpdate.forEach((object) => {
         //remove body
-        object.body.removeEventListener('collide', playSound);
+        object.body.removeEventListener("collide", playSound);
         world.removeBody(object.body);
 
         //remove mesh
         scene.remove(object.mesh);
       });
     };
-    gui.add(debugObject, 'createSphere');
-    gui.add(debugObject, 'createBox');
-    gui.add(debugObject, 'reset');
+    gui.add(debugObject, "createSphere");
+    gui.add(debugObject, "createBox");
+    gui.add(debugObject, "reset");
 
     //Sounds
     let currentSoundTime = 0;
@@ -99,7 +99,7 @@ export default function Lesson8() {
         // delay between sound play
         const strengthImpact = Math.min(
           collision.contact.getImpactVelocityAlongNormal(),
-          10,
+          10
         );
 
         if (strengthImpact > 1.5) {
@@ -145,12 +145,12 @@ export default function Lesson8() {
     //   { friction: 0.1, restitution: 0.7 },
     // ); //whats going to happend when materials touch themselves
     // world.addContactMaterial(contactPlasticConcretMaterial);
-    const defaultMaterial = new CANNON.Material('default');
+    const defaultMaterial = new CANNON.Material("default");
 
     const contactDefaultMaterial = new CANNON.ContactMaterial(
       defaultMaterial,
       defaultMaterial,
-      { friction: 0.1, restitution: 0.7 },
+      { friction: 0.1, restitution: 0.7 }
     );
     world.defaultContactMaterial = contactDefaultMaterial; //Simplest way but in only simple projects
 
@@ -177,7 +177,7 @@ export default function Lesson8() {
     });
     planeBody.quaternion.setFromAxisAngle(
       new CANNON.Vec3(-1, 0, 0),
-      Math.PI * 0.5,
+      Math.PI * 0.5
     ); // pierwszy argument to oś według której obracamy a drugi to stopień
     world.addBody(planeBody);
 
@@ -202,11 +202,11 @@ export default function Lesson8() {
     const floor = new THREE.Mesh(
       new THREE.PlaneBufferGeometry(10, 10),
       new THREE.MeshStandardMaterial({
-        color: '#777777',
+        color: "#777777",
         metalness: 0.3,
         roughness: 0.4,
         envMap: environmentMapTexture,
-      }),
+      })
     );
     floor.receiveShadow = true;
     floor.rotation.x = -Math.PI * 0.5;
@@ -255,7 +255,7 @@ export default function Lesson8() {
         shape: shape,
         material: defaultMaterial,
       });
-      body.addEventListener('collide', playSound);
+      body.addEventListener("collide", playSound);
       world.addBody(body);
 
       //add to update array
@@ -280,7 +280,7 @@ export default function Lesson8() {
       scene.add(mesh);
 
       const shape = new CANNON.Box(
-        new CANNON.Vec3(width / 2, height / 2, depth / 2),
+        new CANNON.Vec3(width / 2, height / 2, depth / 2)
       );
       const body = new CANNON.Body({
         mass: 1,
@@ -289,7 +289,7 @@ export default function Lesson8() {
       });
       body.position.copy(position);
 
-      body.addEventListener('collide', playSound);
+      body.addEventListener("collide", playSound);
       world.addBody(body);
 
       objectsToUpdate.push({ mesh, body });
@@ -310,6 +310,7 @@ export default function Lesson8() {
       objectsToUpdate.forEach((object) => {
         object.mesh.position.copy(object.body.position);
         object.mesh.quaternion.copy(object.body.quaternion);
+
         // object.body.applyForce(
         //   new CANNON.Vec3(-0.1, 0, 0),
         //   object.body.position,
@@ -325,11 +326,11 @@ export default function Lesson8() {
       controls.update();
 
       //Render
-      rerender.render(scene, camera);
+      renderer.render(scene, camera);
       requestAnimationFrame(loop);
     };
     loop();
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
   }, []);
   return <div className="divFor3d" ref={box}></div>;
 }

@@ -1,11 +1,11 @@
-import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
-import { Color, Geometry, MeshBasicMaterial, PointsMaterial } from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import gsap from 'gsap';
-import * as dat from 'dat.gui';
+import React, { useEffect, useRef } from "react";
+import * as THREE from "three";
+import { Color, Geometry, MeshBasicMaterial, PointsMaterial } from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import gsap from "gsap";
+import * as dat from "dat.gui";
 
-import texture1 from '../textures/particles/1.png';
+import texture1 from "../textures/particles/1.png";
 export default function Lesson8() {
   const box = useRef(null);
 
@@ -14,32 +14,32 @@ export default function Lesson8() {
       x: 0,
       y: 0,
     };
-    window.addEventListener('mousemove', (e) => {
+    window.addEventListener("mousemove", (e) => {
       cursor.x = e.clientX / window.innerWidth - 0.5;
       cursor.y = -(e.clientY / window.innerHeight - 0.5);
     });
 
-    let rerender, camera, scene;
+    let renderer, camera, scene;
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(
       75, //45 or 75 is the most popular
       window.innerWidth / window.innerHeight,
       0.01,
-      1000,
+      1000
     );
     camera.position.z = 4;
 
     let aspectRatio = window.innerWidth / window.innerHeight;
-    rerender = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    rerender.setSize(window.innerWidth, window.innerHeight);
-    rerender.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //ustawia maksymalnie pixelRatio na 2 jesli pixelRatio urzadzenia jest wieksze od 2
-    box.current.appendChild(rerender.domElement);
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //ustawia maksymalnie pixelRatio na 2 jesli pixelRatio urzadzenia jest wieksze od 2
+    box.current.appendChild(renderer.domElement);
 
     const handleResize = () => {
       aspectRatio = window.innerWidth / window.innerHeight;
-      rerender.setSize(window.innerWidth, window.innerHeight);
-      rerender.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // jeśli użytkownik przeniesie na inny ekran również zmieniamy pixelRatio
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // jeśli użytkownik przeniesie na inny ekran również zmieniamy pixelRatio
 
       camera.aspect = aspectRatio;
       camera.updateProjectionMatrix();
@@ -50,26 +50,26 @@ export default function Lesson8() {
     //mouse
     const mouse = new THREE.Vector2();
 
-    window.addEventListener('mousemove', (e) => {
+    window.addEventListener("mousemove", (e) => {
       mouse.set(
         (e.clientX / window.innerWidth) * 2 - 1,
-        (e.clientY / window.innerHeight) * -2 + 1,
+        (e.clientY / window.innerHeight) * -2 + 1
       );
     });
 
-    window.addEventListener('click', (e) => {
+    window.addEventListener("click", (e) => {
       if (currentIntersect) {
         switch (currentIntersect.object) {
           case sphere1: {
-            console.log('click sphere1');
+            console.log("click sphere1");
             break;
           }
           case sphere2: {
-            console.log('click sphere2');
+            console.log("click sphere2");
             break;
           }
           case sphere3: {
-            console.log('click sphere3');
+            console.log("click sphere3");
             break;
           }
         }
@@ -130,30 +130,30 @@ export default function Lesson8() {
       const intersects = raycaster.intersectObjects(sphereArray);
 
       sphereArray.forEach((sphere) => {
-        sphere.material.color.set('#ffffff');
+        sphere.material.color.set("#ffffff");
       });
 
       for (const intersect of intersects) {
-        intersect.object.material.color.set('#0000ff');
+        intersect.object.material.color.set("#0000ff");
       }
 
       if (intersects.length) {
         if (currentIntersect === null) {
-          console.log('mouse enter');
+          console.log("mouse enter");
         }
         currentIntersect = intersects[0];
       } else {
         if (currentIntersect !== null) {
-          console.log('mouse leave');
+          console.log("mouse leave");
         }
         currentIntersect = null;
       }
       controls.update();
-      rerender.render(scene, camera);
+      renderer.render(scene, camera);
       requestAnimationFrame(loop);
     };
     loop();
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
   }, []);
   return <div className="divFor3d" ref={box}></div>;
 }

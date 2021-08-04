@@ -1,11 +1,11 @@
-import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
-import { Color, Geometry, MeshBasicMaterial, PointsMaterial } from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import gsap from 'gsap';
-import * as dat from 'dat.gui';
+import React, { useEffect, useRef } from "react";
+import * as THREE from "three";
+import { Color, Geometry, MeshBasicMaterial, PointsMaterial } from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import gsap from "gsap";
+import * as dat from "dat.gui";
 
-import texture1 from '../textures/particles/1.png';
+import texture1 from "../textures/particles/1.png";
 export default function Lesson8() {
   const box = useRef(null);
 
@@ -14,32 +14,32 @@ export default function Lesson8() {
       x: 0,
       y: 0,
     };
-    window.addEventListener('mousemove', (e) => {
+    window.addEventListener("mousemove", (e) => {
       cursor.x = e.clientX / window.innerWidth - 0.5;
       cursor.y = -(e.clientY / window.innerHeight - 0.5);
     });
 
-    let rerender, camera, scene;
+    let renderer, camera, scene;
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(
       75, //45 or 75 is the most popular
       window.innerWidth / window.innerHeight,
       0.01,
-      1000,
+      1000
     );
     camera.position.z = 10;
 
     let aspectRatio = window.innerWidth / window.innerHeight;
-    rerender = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    rerender.setSize(window.innerWidth, window.innerHeight);
-    rerender.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //ustawia maksymalnie pixelRatio na 2 jesli pixelRatio urzadzenia jest wieksze od 2
-    box.current.appendChild(rerender.domElement);
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //ustawia maksymalnie pixelRatio na 2 jesli pixelRatio urzadzenia jest wieksze od 2
+    box.current.appendChild(renderer.domElement);
 
     const handleResize = () => {
       aspectRatio = window.innerWidth / window.innerHeight;
-      rerender.setSize(window.innerWidth, window.innerHeight);
-      rerender.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // jeśli użytkownik przeniesie na inny ekran również zmieniamy pixelRatio
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // jeśli użytkownik przeniesie na inny ekran również zmieniamy pixelRatio
 
       camera.aspect = aspectRatio;
       camera.updateProjectionMatrix();
@@ -60,8 +60,8 @@ export default function Lesson8() {
       spin: 1,
       randomness: 0.2,
       randomnessPower: 3,
-      insideColor: '#ff6030',
-      outsideColor: '#1b3984',
+      insideColor: "#ff6030",
+      outsideColor: "#1b3984",
       galaxyRotationSpeed: 15,
     };
 
@@ -124,12 +124,12 @@ export default function Lesson8() {
         colors[index + 2] = mixedColor.b;
       }
       galaxyGeometry.setAttribute(
-        'position',
-        new THREE.BufferAttribute(particles, 3),
+        "position",
+        new THREE.BufferAttribute(particles, 3)
       );
       galaxyGeometry.setAttribute(
-        'color',
-        new THREE.BufferAttribute(colors, 3),
+        "color",
+        new THREE.BufferAttribute(colors, 3)
       );
 
       galaxyMaterial = new PointsMaterial({
@@ -151,69 +151,69 @@ export default function Lesson8() {
     const gui = new dat.GUI({ width: 400 });
 
     gui
-      .add(parameters, 'count')
-      .name('Particles count')
+      .add(parameters, "count")
+      .name("Particles count")
       .min(100)
       .max(1000000)
       .step(100)
       .onFinishChange(generateGalaxy);
 
     gui
-      .add(parameters, 'size')
-      .name('Particles size')
+      .add(parameters, "size")
+      .name("Particles size")
       .min(0.0001)
       .max(0.1)
       .step(0.001)
       .onFinishChange(generateGalaxy);
     gui
-      .add(parameters, 'radius')
-      .name('Particles radius')
+      .add(parameters, "radius")
+      .name("Particles radius")
       .min(0.1)
       .max(20)
       .step(0.01)
       .onFinishChange(generateGalaxy);
     gui
-      .add(parameters, 'branches')
-      .name('Particles branches')
+      .add(parameters, "branches")
+      .name("Particles branches")
       .min(2)
       .max(20)
       .step(1)
       .onFinishChange(generateGalaxy);
     gui
-      .add(parameters, 'spin')
-      .name('Particles spin')
+      .add(parameters, "spin")
+      .name("Particles spin")
       .min(-5)
       .max(5)
       .step(0.001)
       .onFinishChange(generateGalaxy);
     gui
-      .add(parameters, 'randomness')
-      .name('Particles randomness')
+      .add(parameters, "randomness")
+      .name("Particles randomness")
       .min(0)
       .max(2)
       .step(0.001)
       .onFinishChange(generateGalaxy);
     gui
-      .add(parameters, 'randomnessPower')
-      .name('Particles randomnessPower')
+      .add(parameters, "randomnessPower")
+      .name("Particles randomnessPower")
       .min(1)
       .max(10)
       .step(0.001)
       .onFinishChange(generateGalaxy);
     gui
-      .add(parameters, 'galaxyRotationSpeed')
-      .name('Galaxy rotation speed')
+      .add(parameters, "galaxyRotationSpeed")
+      .name("Galaxy rotation speed")
       .min(1)
       .max(100)
       .step(1)
       .onFinishChange(generateGalaxy);
     gui
-      .addColor(parameters, 'insideColor')
-      .name('Particles inside color')
+      .addColor(parameters, "insideColor")
+      .name("Particles inside color")
       .onFinishChange(generateGalaxy);
     gui
-      .addColor(parameters, 'outsideColor')
-      .name('Particles outside color')
+      .addColor(parameters, "outsideColor")
+      .name("Particles outside color")
       .onFinishChange(generateGalaxy);
 
     const clock = new THREE.Clock();
@@ -222,11 +222,11 @@ export default function Lesson8() {
 
       galaxy.rotation.y = (elapsedTime / 100) * parameters.galaxyRotationSpeed;
       controls.update();
-      rerender.render(scene, camera);
+      renderer.render(scene, camera);
       requestAnimationFrame(loop);
     };
     loop();
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
   }, []);
   return <div className="divFor3d" ref={box}></div>;
 }

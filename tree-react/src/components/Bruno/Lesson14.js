@@ -1,12 +1,12 @@
-import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper';
-import gsap from 'gsap';
-import texture1 from '../textures/matcaps/8.png';
-import { DoubleSide, SpotLightHelper } from 'three';
-import * as dat from 'dat.gui';
-import { dir } from 'async';
+import React, { useEffect, useRef } from "react";
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper";
+import gsap from "gsap";
+import texture1 from "../textures/matcaps/8.png";
+import { DoubleSide, SpotLightHelper } from "three";
+import * as dat from "dat.gui";
+import { dir } from "async";
 
 export default function Lesson8() {
   const box = useRef(null);
@@ -16,28 +16,28 @@ export default function Lesson8() {
       x: 0,
       y: 0,
     };
-    let rerender, camera, scene;
+    let renderer, camera, scene;
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(
       75, //45 or 75 is the most popular
       window.innerWidth / window.innerHeight,
       0.01,
-      1000,
+      1000
     );
     camera.position.z = 8;
     camera.position.y = 2;
 
     let aspectRatio = window.innerWidth / window.innerHeight;
-    rerender = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    rerender.setSize(window.innerWidth, window.innerHeight);
-    rerender.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //ustawia maksymalnie pixelRatio na 2 jesli pixelRatio urzadzenia jest wieksze od 2
-    box.current.appendChild(rerender.domElement);
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //ustawia maksymalnie pixelRatio na 2 jesli pixelRatio urzadzenia jest wieksze od 2
+    box.current.appendChild(renderer.domElement);
 
     const handleResize = () => {
       aspectRatio = window.innerWidth / window.innerHeight;
-      rerender.setSize(window.innerWidth, window.innerHeight);
-      rerender.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // jeśli użytkownik przeniesie na inny ekran również zmieniamy pixelRatio
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // jeśli użytkownik przeniesie na inny ekran również zmieniamy pixelRatio
       camera.aspect = aspectRatio;
       camera.updateProjectionMatrix();
     };
@@ -84,7 +84,7 @@ export default function Lesson8() {
       10, //odleglosc
       Math.PI * 0.1, //szerokosc swiatla
       0.2, //rozproszczenie
-      1,
+      1
     );
     spotLight.position.set(0, 2, 3);
     spotLight.target.position.x = -1.5; //.target  to miejsce w które trafia światło
@@ -122,14 +122,14 @@ export default function Lesson8() {
 
     //Debug
     const gui = new dat.GUI();
-    gui.add(ambientLight, 'intensity').min(0).max(1).step(0.0001);
+    gui.add(ambientLight, "intensity").min(0).max(1).step(0.0001);
 
     //Helpers
     const hemisphereHelper = new THREE.HemisphereLightHelper(hemisphere);
     // scene.add(hemisphereHelper);
 
     const directionalHelper = new THREE.DirectionalLightHelper(
-      directionalLight,
+      directionalLight
     );
     // scene.add(directionalHelper);
 
@@ -158,12 +158,12 @@ export default function Lesson8() {
       torus.rotation.y = elapsedTime / 2;
 
       controls.update();
-      rerender.render(scene, camera);
+      renderer.render(scene, camera);
       requestAnimationFrame(loop);
     };
     loop();
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
   }, []);
   return <div className="divFor3d" ref={box}></div>;
 }

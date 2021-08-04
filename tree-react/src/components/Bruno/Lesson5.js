@@ -1,25 +1,25 @@
-import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
+import React, { useEffect, useRef } from "react";
+import * as THREE from "three";
 
 export default function Lesson4() {
   const box = useRef(null);
 
   useEffect(() => {
-    let rerender, camera, scene;
+    let renderer, camera, scene;
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(
       75,
-      window.innerWidth / window.innerHeight,
+      window.innerWidth / window.innerHeight
     );
     camera.position.set(1, 1, 5);
 
-    rerender = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    rerender.setSize(window.innerWidth, window.innerHeight);
-    box.current.appendChild(rerender.domElement);
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    box.current.appendChild(renderer.domElement);
 
     const handleResize = () => {
-      rerender.setSize(window.innerWidth, window.innerHeight);
+      renderer.setSize(window.innerWidth, window.innerHeight);
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
     };
@@ -37,16 +37,16 @@ export default function Lesson4() {
       new THREE.BoxGeometry(),
       new THREE.MeshBasicMaterial({
         color: 0x666099,
-      }),
+      })
     );
     const cube2 = new THREE.Mesh(
       new THREE.BoxGeometry(),
       new THREE.MeshBasicMaterial({
         color: 0x666099,
-      }),
+      })
     );
     cube2.position.set(1.4, 0, 0);
-    group.rotation.reorder('YXZ');
+    group.rotation.reorder("YXZ");
     group.add(cube1, cube2);
     //teraz mozemy poruszac całą grupą
     group.position.set(1.5, 1.5, 1.5);
@@ -65,7 +65,7 @@ export default function Lesson4() {
     //Math.Pi/2 to 90stopni; Math.PI/4 to 45stopni itd.
 
     //absolute rotation (reorder)
-    mesh.rotation.reorder('YZX');
+    mesh.rotation.reorder("YZX");
     mesh.rotation.x = Math.PI * 0.35;
     mesh.rotation.y = Math.PI * 0.6;
     //dzieki temu najpierw wykona się obrót Y i nie powstaną jakieś dziwne rzeczy
@@ -94,7 +94,7 @@ export default function Lesson4() {
     scene.add(axesHelper);
 
     const loop = () => {
-      rerender.render(scene, camera);
+      renderer.render(scene, camera);
       mesh.rotation.x += 0.001;
       mesh.rotation.y += 0.001;
       group.rotation.y += 0.001;
@@ -103,7 +103,7 @@ export default function Lesson4() {
     };
     loop();
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
   }, []);
   return <div ref={box}></div>;
 }

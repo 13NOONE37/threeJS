@@ -1,51 +1,51 @@
-import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
-import { Sprite, TetrahedronBufferGeometry } from 'three';
+import React, { useEffect, useRef } from "react";
+import * as THREE from "three";
+import { Sprite, TetrahedronBufferGeometry } from "three";
 
 export default function SolarSystem() {
   const box = useRef(null);
 
   useEffect(() => {
-    let rerender, camera, scene;
+    let renderer, camera, scene;
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(
       75,
-      window.innerWidth / window.innerHeight,
+      window.innerWidth / window.innerHeight
     );
     camera.position.set(0, 45, 350);
     // camera.rotation.x += 0.5;
     camera.rotation.z -= 0.5;
     // camera.rotation.x += 0.5;
 
-    rerender = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    rerender.setSize(window.innerWidth, window.innerHeight);
-    box.current.appendChild(rerender.domElement);
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    box.current.appendChild(renderer.domElement);
 
     const handleResize = () => {
-      rerender.setSize(window.innerWidth, window.innerHeight);
+      renderer.setSize(window.innerWidth, window.innerHeight);
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
     };
 
-    const createPointLight = (c = 'x0ffffff', i = 50) => {
+    const createPointLight = (c = "x0ffffff", i = 50) => {
       return new THREE.PointLight(c, i);
     };
 
-    const colorLight = new THREE.Color('hsl(54,80%,55%)');
+    const colorLight = new THREE.Color("hsl(54,80%,55%)");
 
-    const light1 = createPointLight('x0ff0000', 5);
+    const light1 = createPointLight("x0ff0000", 5);
     const light2 = createPointLight(colorLight, 1);
     light2.position.set(0, 45, 350);
     scene.add(light1, light2);
 
-    const createSphere = (r = 1, c = 'x0ffffff') => {
+    const createSphere = (r = 1, c = "x0ffffff") => {
       const sphereGeo = new THREE.SphereGeometry(r, 50, 50);
       const sphereMaterial = new THREE.MeshLambertMaterial({ color: c });
       return new THREE.Mesh(sphereGeo, sphereMaterial);
     };
 
-    const createPivot = (r = 1, c = 'x0ffffff') => {
+    const createPivot = (r = 1, c = "x0ffffff") => {
       const sphere = createSphere(r, c);
       const pivot = new THREE.Object3D();
       pivot.add(sphere);
@@ -70,7 +70,7 @@ export default function SolarSystem() {
     scene.add(sun);
 
     const loop = () => {
-      rerender.render(scene, camera);
+      renderer.render(scene, camera);
       sun.rotation.y += 0.005;
       planet1.sphere.rotation.x -= 0.002;
       planet1.sphere.rotation.z -= 0.002;
@@ -79,7 +79,7 @@ export default function SolarSystem() {
     };
     loop();
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
   }, []);
   return <div ref={box}></div>;
 }

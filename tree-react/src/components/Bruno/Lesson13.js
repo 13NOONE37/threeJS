@@ -1,12 +1,12 @@
-import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
-import { Geometry } from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import gsap from 'gsap';
-import { GeometryUtils } from 'three';
-import typefaceFont from 'three/examples/fonts/helvetiker_regular.typeface.json';
+import React, { useEffect, useRef } from "react";
+import * as THREE from "three";
+import { Geometry } from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import gsap from "gsap";
+import { GeometryUtils } from "three";
+import typefaceFont from "three/examples/fonts/helvetiker_regular.typeface.json";
 
-import texture1 from '../textures/matcaps/8.png';
+import texture1 from "../textures/matcaps/8.png";
 
 export default function Lesson8() {
   const box = useRef(null);
@@ -16,34 +16,34 @@ export default function Lesson8() {
       x: 0,
       y: 0,
     };
-    window.addEventListener('mousemove', (e) => {
+    window.addEventListener("mousemove", (e) => {
       cursor.x = e.clientX / window.innerWidth - 0.5;
       cursor.y = -(e.clientY / window.innerHeight - 0.5);
     });
 
-    let rerender, camera, scene;
+    let renderer, camera, scene;
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(
       75, //45 or 75 is the most popular
       window.innerWidth / window.innerHeight,
       0.01,
-      1000,
+      1000
     );
     camera.position.z = 16;
 
     gsap.to(camera.position, { z: 4.4, duration: 3 });
 
     let aspectRatio = window.innerWidth / window.innerHeight;
-    rerender = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    rerender.setSize(window.innerWidth, window.innerHeight);
-    rerender.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //ustawia maksymalnie pixelRatio na 2 jesli pixelRatio urzadzenia jest wieksze od 2
-    box.current.appendChild(rerender.domElement);
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //ustawia maksymalnie pixelRatio na 2 jesli pixelRatio urzadzenia jest wieksze od 2
+    box.current.appendChild(renderer.domElement);
 
     const handleResize = () => {
       aspectRatio = window.innerWidth / window.innerHeight;
-      rerender.setSize(window.innerWidth, window.innerHeight);
-      rerender.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // jeśli użytkownik przeniesie na inny ekran również zmieniamy pixelRatio
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // jeśli użytkownik przeniesie na inny ekran również zmieniamy pixelRatio
 
       camera.aspect = aspectRatio;
       camera.updateProjectionMatrix();
@@ -64,7 +64,7 @@ export default function Lesson8() {
     const matcap1 = textureLoader.load(texture1);
 
     //Fonts
-    const textGeometry = new THREE.TextGeometry('Czesio Cheetos', {
+    const textGeometry = new THREE.TextGeometry("Czesio Cheetos", {
       font: new THREE.Font(typefaceFont),
       size: 0.5,
       height: 0.2,
@@ -95,7 +95,7 @@ export default function Lesson8() {
     const text = new THREE.Mesh(textGeometry, material);
     scene.add(text);
 
-    console.time('donuts');
+    console.time("donuts");
     //add donuts
     const torusGeo = new THREE.TorusBufferGeometry(0.025, 0.02, 15, 45);
 
@@ -105,7 +105,7 @@ export default function Lesson8() {
       torus.position.set(
         (Math.random() - 0.5) * 16,
         (Math.random() - 0.5) * 16,
-        (Math.random() - 0.5) * 16,
+        (Math.random() - 0.5) * 16
       );
       const scaleValue = Math.random();
       torus.scale.set(scaleValue, scaleValue, scaleValue);
@@ -114,7 +114,7 @@ export default function Lesson8() {
       donutGroup.add(torus);
     }
     scene.add(donutGroup);
-    console.timeEnd('donuts');
+    console.timeEnd("donuts");
 
     camera.lookAt(text.position);
     const clock = new THREE.Clock();
@@ -126,11 +126,11 @@ export default function Lesson8() {
       camera.position.x = Math.sin(elapsedTime);
       camera.position.y = Math.cos(elapsedTime);
       controls.update();
-      rerender.render(scene, camera);
+      renderer.render(scene, camera);
       requestAnimationFrame(loop);
     };
     loop();
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
   }, []);
   return <div className="divFor3d" ref={box}></div>;
 }

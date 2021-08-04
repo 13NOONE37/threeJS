@@ -1,38 +1,38 @@
-import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper';
-import gsap from 'gsap';
-import { DoubleSide, PointLight, SpotLightHelper } from 'three';
-import * as dat from 'dat.gui';
+import React, { useEffect, useRef } from "react";
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper";
+import gsap from "gsap";
+import { DoubleSide, PointLight, SpotLightHelper } from "three";
+import * as dat from "dat.gui";
 
-import grass1 from '../textures/house/grass/ambientOcclusion.jpg';
-import grass2 from '../textures/house/grass/color.jpg';
-import grass3 from '../textures/house/grass/normal.jpg';
-import grass4 from '../textures/house/grass/roughness.jpg';
+import grass1 from "../textures/house/grass/ambientOcclusion.jpg";
+import grass2 from "../textures/house/grass/color.jpg";
+import grass3 from "../textures/house/grass/normal.jpg";
+import grass4 from "../textures/house/grass/roughness.jpg";
 
-import brick1 from '../textures/house/bricks/ambientOcclusion.jpg';
-import brick2 from '../textures/house/bricks/color.jpg';
-import brick3 from '../textures/house/bricks/normal.jpg';
-import brick4 from '../textures/house/bricks/roughness.jpg';
+import brick1 from "../textures/house/bricks/ambientOcclusion.jpg";
+import brick2 from "../textures/house/bricks/color.jpg";
+import brick3 from "../textures/house/bricks/normal.jpg";
+import brick4 from "../textures/house/bricks/roughness.jpg";
 
-import door1 from '../textures/house/door/ambientOcclusion.jpg';
-import door2 from '../textures/house/door/color.jpg';
-import door3 from '../textures/house/door/normal.jpg';
-import door4 from '../textures/house/door/roughness.jpg';
-import door5 from '../textures/house/door/alpha.jpg';
-import door6 from '../textures/house/door/height.jpg';
-import door7 from '../textures/house/door/metalness.jpg';
+import door1 from "../textures/house/door/ambientOcclusion.jpg";
+import door2 from "../textures/house/door/color.jpg";
+import door3 from "../textures/house/door/normal.jpg";
+import door4 from "../textures/house/door/roughness.jpg";
+import door5 from "../textures/house/door/alpha.jpg";
+import door6 from "../textures/house/door/height.jpg";
+import door7 from "../textures/house/door/metalness.jpg";
 
-import lamp1 from '../textures/MetalFloor/ambientOcclusion.jpg';
-import lamp2 from '../textures/MetalFloor/color.jpg';
-import lamp3 from '../textures/MetalFloor/normal.jpg';
-import lamp4 from '../textures/MetalFloor/roughness.jpg';
-import lamp5 from '../textures/MetalFloor/height.png';
-import lamp6 from '../textures/MetalFloor/metallic.jpg';
+import lamp1 from "../textures/MetalFloor/ambientOcclusion.jpg";
+import lamp2 from "../textures/MetalFloor/color.jpg";
+import lamp3 from "../textures/MetalFloor/normal.jpg";
+import lamp4 from "../textures/MetalFloor/roughness.jpg";
+import lamp5 from "../textures/MetalFloor/height.png";
+import lamp6 from "../textures/MetalFloor/metallic.jpg";
 
-import ghastModel from '../textures/minecraft-ghast/source/ghast.obj';
-import ghastTexture from '../textures/minecraft-ghast/textures/ghast.png';
+import ghastModel from "../textures/minecraft-ghast/source/ghast.obj";
+import ghastTexture from "../textures/minecraft-ghast/textures/ghast.png";
 
 export default function Lesson8() {
   const box = useRef(null);
@@ -42,32 +42,32 @@ export default function Lesson8() {
       x: 0,
       y: 0,
     };
-    let rerender, camera, scene;
+    let renderer, camera, scene;
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(
       75, //45 or 75 is the most popular
       window.innerWidth / window.innerHeight,
       0.01,
-      1000,
+      1000
     );
     camera.position.z = 18;
     camera.position.y = 9;
 
     let aspectRatio = window.innerWidth / window.innerHeight;
-    rerender = new THREE.WebGLRenderer({ antialias: true });
-    rerender.shadowMap.enabled = true;
-    rerender.shadowMap.type = THREE.PCFSoftShadowMap;
-    rerender.setClearColor('#262837');
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.setClearColor("#262837");
 
-    rerender.setSize(window.innerWidth, window.innerHeight);
-    rerender.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //ustawia maksymalnie pixelRatio na 2 jesli pixelRatio urzadzenia jest wieksze od 2
-    box.current.appendChild(rerender.domElement);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //ustawia maksymalnie pixelRatio na 2 jesli pixelRatio urzadzenia jest wieksze od 2
+    box.current.appendChild(renderer.domElement);
 
     const handleResize = () => {
       aspectRatio = window.innerWidth / window.innerHeight;
-      rerender.setSize(window.innerWidth, window.innerHeight);
-      rerender.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // jeśli użytkownik przeniesie na inny ekran również zmieniamy pixelRatio
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // jeśli użytkownik przeniesie na inny ekran również zmieniamy pixelRatio
       camera.aspect = aspectRatio;
       camera.updateProjectionMatrix();
     };
@@ -85,16 +85,16 @@ export default function Lesson8() {
     //Textures
     const loaderManager = new THREE.LoadingManager();
     loaderManager.onStart = () => {
-      console.log('start');
+      console.log("start");
     };
     loaderManager.onProgress = () => {
-      console.log('loading...');
+      console.log("loading...");
     };
     loaderManager.onLoad = () => {
-      console.log('loaded');
+      console.log("loaded");
     };
     loaderManager.onError = () => {
-      console.log('something went wrong');
+      console.log("something went wrong");
     };
     const textureLoader = new THREE.TextureLoader(loaderManager);
 
@@ -140,7 +140,7 @@ export default function Lesson8() {
     const lampHeight = textureLoader.load(lamp5);
     const lampMetalness = textureLoader.load(lamp6);
     //Config
-    const moonColor = new THREE.Color('hsl(235, 51%, 40%)');
+    const moonColor = new THREE.Color("hsl(235, 51%, 40%)");
 
     //Lights
     const ambientLight = new THREE.AmbientLight(moonColor, 0.2); //TODO zmienić na 0.1
@@ -174,8 +174,8 @@ export default function Lesson8() {
 
     plane.rotation.x = -Math.PI * 0.5;
     plane.geometry.setAttribute(
-      'uv2',
-      new THREE.Float32BufferAttribute(plane.geometry.attributes.uv.array, 2),
+      "uv2",
+      new THREE.Float32BufferAttribute(plane.geometry.attributes.uv.array, 2)
     );
     grassGroup.add(plane);
 
@@ -217,11 +217,11 @@ export default function Lesson8() {
     });
     const houseWalls = new THREE.Mesh(houseWallsGeometry, houseWallsMaterial);
     houseWalls.geometry.setAttribute(
-      'uv2',
+      "uv2",
       new THREE.Float32BufferAttribute(
         houseWalls.geometry.attributes.uv.array,
-        2,
-      ),
+        2
+      )
     );
     houseWalls.castShadow = true;
     houseWalls.position.y += 1.5;
@@ -242,8 +242,8 @@ export default function Lesson8() {
     });
     const door = new THREE.Mesh(doorGeometry, doorMaterial);
     door.geometry.setAttribute(
-      'uv2',
-      new THREE.Float32BufferAttribute(door.geometry.attributes.uv.array, 2),
+      "uv2",
+      new THREE.Float32BufferAttribute(door.geometry.attributes.uv.array, 2)
     );
     door.position.set(0, 1, 2.5);
     houseGroup.add(door);
@@ -274,9 +274,9 @@ export default function Lesson8() {
     scene.add(houseGroup);
 
     //ghosts
-    const ghost1 = new THREE.PointLight('#ff00ff', 2, 3);
-    const ghost2 = new THREE.PointLight('#00ffff', 2, 3);
-    const ghost3 = new THREE.PointLight('#ffff00', 2, 3);
+    const ghost1 = new THREE.PointLight("#ff00ff", 2, 3);
+    const ghost2 = new THREE.PointLight("#00ffff", 2, 3);
+    const ghost3 = new THREE.PointLight("#ffff00", 2, 3);
     ghost1.castShadow = true;
     ghost1.shadow.mapSize.width = 256;
     ghost1.shadow.mapSize.height = 256;
@@ -296,14 +296,14 @@ export default function Lesson8() {
 
     //control
     const gui = new dat.GUI();
-    gui.add(doorMaterial, 'metalness').min(0).max(1).step(0.0001);
-    gui.add(doorMaterial, 'roughness').min(0).max(1).step(0.0001);
-    gui.add(doorMaterial, 'aoMapIntensity').min(0).max(5).step(0.0001);
-    gui.add(doorMaterial, 'displacementScale').min(0).max(1).step(0.0001);
+    gui.add(doorMaterial, "metalness").min(0).max(1).step(0.0001);
+    gui.add(doorMaterial, "roughness").min(0).max(1).step(0.0001);
+    gui.add(doorMaterial, "aoMapIntensity").min(0).max(5).step(0.0001);
+    gui.add(doorMaterial, "displacementScale").min(0).max(1).step(0.0001);
 
-    gui.add(pointLight.position, 'x').min(0).max(10).step(0.0001);
-    gui.add(pointLight.position, 'y').min(0).max(10).step(0.0001);
-    gui.add(pointLight.position, 'z').min(0).max(10).step(0.0001);
+    gui.add(pointLight.position, "x").min(0).max(10).step(0.0001);
+    gui.add(pointLight.position, "y").min(0).max(10).step(0.0001);
+    gui.add(pointLight.position, "z").min(0).max(10).step(0.0001);
 
     //Loop
     camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -336,12 +336,12 @@ export default function Lesson8() {
         Math.cos(elapsedTime * 5) + Math.cos(elapsedTime * 2.5);
 
       controls.update();
-      rerender.render(scene, camera);
+      renderer.render(scene, camera);
       requestAnimationFrame(loop);
     };
     loop();
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
   }, []);
   return <div className="divFor3d" ref={box}></div>;
 }

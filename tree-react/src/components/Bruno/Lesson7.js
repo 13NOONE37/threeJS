@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls';
-import gsap from 'gsap';
+import React, { useEffect, useRef } from "react";
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { DeviceOrientationControls } from "three/examples/jsm/controls/DeviceOrientationControls";
+import gsap from "gsap";
 
 export default function Lesson7() {
   const box = useRef(null);
@@ -12,19 +12,19 @@ export default function Lesson7() {
       x: 0,
       y: 0,
     };
-    window.addEventListener('mousemove', (e) => {
+    window.addEventListener("mousemove", (e) => {
       cursor.x = e.clientX / window.innerWidth - 0.5;
       cursor.y = -(e.clientY / window.innerHeight - 0.5);
     });
 
-    let rerender, camera, scene;
+    let renderer, camera, scene;
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(
       75, //45 or 75 is the most popular
       window.innerWidth / window.innerHeight,
       0.01,
-      1000,
+      1000
     );
     camera.position.z = 3;
 
@@ -40,13 +40,13 @@ export default function Lesson7() {
 
     console.log(camera.position.length());
 
-    rerender = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    rerender.setSize(window.innerWidth, window.innerHeight);
-    box.current.appendChild(rerender.domElement);
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    box.current.appendChild(renderer.domElement);
 
     const handleResize = () => {
       aspectRatio = window.innerWidth / window.innerHeight;
-      rerender.setSize(window.innerWidth, window.innerHeight);
+      renderer.setSize(window.innerWidth, window.innerHeight);
       camera.aspect = aspectRatio;
       //   camera.left = -1 * aspectRatio;
       //   camera.right = 1 * aspectRatio;
@@ -56,7 +56,7 @@ export default function Lesson7() {
     const controls = new OrbitControls(camera, box.current);
     controls.enableDamping = true;
 
-    const colorBlue = new THREE.Color('hsl(210,54%,40%)');
+    const colorBlue = new THREE.Color("hsl(210,54%,40%)");
     const boxG = new THREE.BoxGeometry(0.5, 0.5, 0.5);
     const boxM = new THREE.MeshBasicMaterial({ color: colorBlue });
     const cube = new THREE.Mesh(boxG, boxM);
@@ -77,12 +77,12 @@ export default function Lesson7() {
       //   Update controls; zeby Damping działał
       controls.update();
 
-      rerender.render(scene, camera);
+      renderer.render(scene, camera);
       requestAnimationFrame(loop);
     };
     loop();
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
   }, []);
   return <div ref={box}></div>;
 }
