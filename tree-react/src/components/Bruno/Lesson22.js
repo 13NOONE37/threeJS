@@ -125,6 +125,7 @@ export default function Lesson8() {
       "models/FlightHelmet/glTF/FlightHelmet.gltf",
       // 'portal.gltf',
       // 'hamburger.glb',
+
       (gltf) => {
         console.log("loaded");
         console.log(gltf);
